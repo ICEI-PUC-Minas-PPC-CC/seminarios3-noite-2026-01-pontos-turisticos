@@ -395,7 +395,7 @@ var q = sessionQuestions[state.current];
       el.feedbackImageCaption.textContent = q.place;
     } else {
       el.feedbackTitle.textContent = 'Não foi dessa vez';
-      el.feedbackText.textContent = 'A resposta certa está marcada em verde. Vamos para a próxima!';
+      el.feedbackText.textContent = 'A resposta certa era: "' + q.options[q.correct] + '". Vamos para a próxima!';
       el.feedbackImageWrap.hidden = true;
       el.feedbackImage.src = '';
       el.feedbackImage.alt = '';
