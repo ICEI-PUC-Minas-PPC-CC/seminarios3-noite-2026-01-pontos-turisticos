@@ -1,0 +1,554 @@
+/* ==========================================================================
+   Descobrindo Poços de Caldas — Quiz
+   Design: Material Design 3 Expressive
+   Paleta inspirada nas águas termais (laranja sulfuroso), na Serra de São
+   Domingos (verde) e nas fontes de água (azul), com um acento dourado
+   "Belle Époque" para o Palace Hotel e telas de resultado.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+:root{
+  /* ---- Tema claro (padrão) ---- */
+  --bg: #FFF8F0;
+  --surface: #FFFFFF;
+  --surface-alt: #FFEFD9;
+
+  --primary: #EE7A1E;
+  --on-primary: #FFFFFF;
+  --primary-container: #FFDCB8;
+  --on-primary-container: #7A3900;
+
+  --secondary: #2E6B4F;
+  --on-secondary: #FFFFFF;
+  --secondary-container: #CDEBD9;
+  --on-secondary-container: #0D3D27;
+
+  --tertiary: #1D7293;
+  --on-tertiary: #FFFFFF;
+  --tertiary-container: #C7E9F4;
+  --on-tertiary-container: #083444;
+
+  --success: #2E9E5B;
+  --on-success: #FFFFFF;
+  --success-container: #D2F4DF;
+  --on-success-container: #0B4326;
+
+  --error: #D6455A;
+  --on-error: #FFFFFF;
+  --error-container: #FBD9DE;
+  --on-error-container: #5C0A1B;
+
+  --gold: #C9971D;
+
+  --text: #2B2118;
+  --text-muted: #6E5D4E;
+  --outline: #E7D9C6;
+  --shadow-rgb: 60, 40, 10;
+
+  /* ---- Tipografia ---- */
+  --font-display: 'Baloo 2', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+
+  /* ---- Formas (MD3 Expressive = cantos bem arredondados) ---- */
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 30px;
+  --radius-xl: 42px;
+  --radius-full: 999px;
+}
+
+[data-theme="dark"]{
+  --bg: #171310;
+  --surface: #211B15;
+  --surface-alt: #2B2119;
+
+  --primary: #FF9D4D;
+  --on-primary: #3A1B00;
+  --primary-container: #7A3900;
+  --on-primary-container: #FFDCB8;
+
+  --secondary: #79D3A6;
+  --on-secondary: #08321F;
+  --secondary-container: #0D3D27;
+  --on-secondary-container: #CDEBD9;
+
+  --tertiary: #7FD3EE;
+  --on-tertiary: #01313F;
+  --tertiary-container: #083444;
+  --on-tertiary-container: #C7E9F4;
+
+  --success: #6FDB9C;
+  --on-success: #0B3D22;
+  --success-container: #0B4326;
+  --on-success-container: #D2F4DF;
+
+  --error: #FF8FA0;
+  --on-error: #5C0A1B;
+  --error-container: #5C0A1B;
+  --on-error-container: #FBD9DE;
+
+  --gold: #F0C24B;
+
+  --text: #F3E9DC;
+  --text-muted: #C7B7A4;
+  --outline: #3D3327;
+  --shadow-rgb: 0, 0, 0;
+}
+
+/* ---- Reset básico ---- */
+*, *::before, *::after{ box-sizing: border-box; }
+html, body{ margin: 0; padding: 0; }
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background-color .3s ease, color .3s ease;
+  overflow-x: hidden;
+}
+h1, h2, h3{ font-family: var(--font-display); margin: 0; }
+p{ margin: 0; }
+button{ font-family: inherit; }
+img{ max-width: 100%; display: block; }
+ul{ margin: 0; padding: 0; list-style: none; }
+
+.sr-only{
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Foco sempre visível — essencial para quem navega no teclado */
+:focus-visible{
+  outline: 3px solid var(--tertiary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Fundo animado de "bolhas termais" — elemento assinatura da página
+   ========================================================================== */
+.bubbles-bg{
+  position: fixed; inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.bubble{
+  position: absolute;
+  bottom: -120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--primary-container), transparent 70%);
+  opacity: .45;
+  filter: blur(1px);
+}
+[data-theme="dark"] .bubble{ opacity: .28; }
+.b1{ left: 6%;  width: 90px;  height: 90px;  animation: floatUp 22s linear infinite; }
+.b2{ left: 22%; width: 50px;  height: 50px;  animation: floatUp 16s linear infinite 2s; background-image: radial-gradient(circle at 35% 30%, var(--tertiary-container), transparent 70%); }
+.b3{ left: 45%; width: 130px; height: 130px; animation: floatUp 28s linear infinite 4s; }
+.b4{ left: 65%; width: 70px;  height: 70px;  animation: floatUp 19s linear infinite 1s; background-image: radial-gradient(circle at 35% 30%, var(--secondary-container), transparent 70%); }
+.b5{ left: 82%; width: 100px; height: 100px; animation: floatUp 25s linear infinite 6s; }
+.b6{ left: 92%; width: 45px;  height: 45px;  animation: floatUp 14s linear infinite 3s; background-image: radial-gradient(circle at 35% 30%, var(--tertiary-container), transparent 70%); }
+
+@keyframes floatUp{
+  0%   { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-115vh) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce){
+  .bubble{ animation: none; opacity: .18; }
+}
+
+/* ==========================================================================
+   Layout geral
+   ========================================================================== */
+.app-header{
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--outline);
+}
+.app-header__brand{ display: flex; align-items: center; gap: 8px; }
+.app-header__icon{ font-size: 1.5rem; }
+.app-header__title{
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--primary);
+}
+
+.icon-btn{
+  display: grid; place-items: center;
+  width: 46px; height: 46px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--outline);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(var(--shadow-rgb), .08);
+  transition: transform .2s ease, background-color .2s ease;
+}
+.icon-btn:hover{ transform: translateY(-2px) scale(1.05); background: var(--surface-alt); }
+.icon-btn:active{ transform: translateY(0) scale(.96); }
+
+.app-main{
+  position: relative; z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 18px 60px;
+  min-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.app-footer{
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 18px;
+  color: var(--text-muted);
+  font-size: .85rem;
+}
+
+/* ---- Telas ---- */
+.screen{ width: 100%; }
+.screen[hidden]{ display: none; }
+.screen--enter{ animation: fadeInUp .45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes fadeInUp{
+  from{ opacity: 0; transform: translateY(18px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .screen--enter{ animation: none; }
+}
+
+/* ---- Cartão base ---- */
+.card{
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-xl);
+  padding: 32px 26px;
+  box-shadow: 0 1px 3px rgba(var(--shadow-rgb), .06),
+              0 12px 32px rgba(var(--shadow-rgb), .10);
+}
+
+/* ==========================================================================
+   Tela inicial
+   ========================================================================== */
+.hero-card{ text-align: center; }
+.eyebrow{
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--on-secondary-container);
+  background: var(--secondary-container);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  margin-bottom: 18px;
+}
+.hero-title{
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 800;
+  line-height: 1.08;
+  color: var(--primary);
+  margin-bottom: 14px;
+}
+.hero-subtitle{
+  font-size: clamp(1rem, 3.6vw, 1.15rem);
+  color: var(--text-muted);
+  max-width: 46ch;
+  margin: 0 auto 24px;
+}
+.feature-list{
+  display: flex; flex-direction: column; gap: 12px;
+  text-align: left;
+  max-width: 380px;
+  margin: 0 auto 28px;
+}
+.feature-list li{
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 700;
+  background: var(--surface-alt);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-size: .98rem;
+}
+.feature-list li span:first-child{ font-size: 1.3rem; }
+
+/* ==========================================================================
+   Botões (MD3: filled / tonal)
+   ========================================================================== */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background-color .2s ease;
+}
+.btn:active{ transform: scale(.97); }
+
+.btn--primary{
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: 0 6px 16px rgba(var(--shadow-rgb), .18);
+}
+.btn--primary:hover{ transform: translateY(-2px); box-shadow: 0 10px 22px rgba(var(--shadow-rgb), .22); }
+
+.btn--tonal{
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+.btn--tonal:hover{ background: color-mix(in srgb, var(--secondary-container) 80%, var(--secondary) 20%); }
+
+.btn--lg{ padding: 16px 34px; font-size: 1.15rem; width: 100%; max-width: 340px; }
+.btn--sm{ padding: 10px 20px; font-size: .95rem; }
+
+/* ==========================================================================
+   Tela de perguntas
+   ========================================================================== */
+.quiz-topbar{ margin-bottom: 18px; }
+.progress-info{
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--text-muted);
+  font-size: .95rem;
+}
+.score-pill{
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+}
+.progress-track{
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--surface-alt);
+  overflow: hidden;
+  border: 1px solid var(--outline);
+}
+.progress-fill{
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--primary), var(--gold));
+  transition: width .5s cubic-bezier(.2,.8,.2,1);
+}
+
+.question-card{ padding: 28px 22px; }
+
+.question-text{
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.2rem, 4.6vw, 1.55rem);
+  line-height: 1.35;
+  margin-bottom: 22px;
+}
+
+.options-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (min-width: 560px){
+  .options-grid{ grid-template-columns: 1fr 1fr; }
+}
+
+.option-btn{
+  display: flex; align-items: center; gap: 12px;
+  text-align: left;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--outline);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  min-height: 60px;
+  transition: transform .16s ease, border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+.option-btn:hover:not(:disabled){
+  border-color: var(--tertiary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(var(--shadow-rgb), .12);
+}
+.option-letter{
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  width: 32px; height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: .95rem;
+}
+.option-text{ flex: 1 1 auto; }
+.option-icon{ flex: 0 0 auto; font-size: 1.3rem; line-height: 1; }
+
+.option-btn:disabled{ cursor: default; }
+.option-btn.is-muted{ opacity: .5; }
+
+.option-btn.is-correct{
+  border-color: var(--success);
+  background: var(--success-container);
+  color: var(--on-success-container);
+  animation: pop .4s ease;
+}
+.option-btn.is-correct .option-letter{ background: var(--success); color: var(--on-success); }
+
+.option-btn.is-incorrect{
+  border-color: var(--error);
+  background: var(--error-container);
+  color: var(--on-error-container);
+  animation: shake .4s ease;
+}
+.option-btn.is-incorrect .option-letter{ background: var(--error); color: var(--on-error); }
+
+@keyframes pop{
+  0%{ transform: scale(1); }
+  40%{ transform: scale(1.035); }
+  100%{ transform: scale(1); }
+}
+@keyframes shake{
+  0%, 100%{ transform: translateX(0); }
+  20%{ transform: translateX(-6px); }
+  40%{ transform: translateX(5px); }
+  60%{ transform: translateX(-4px); }
+  80%{ transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .option-btn.is-correct, .option-btn.is-incorrect{ animation: none; }
+}
+
+/* ---- Botão e painel de dica ---- */
+.hint-toggle{ margin-bottom: 4px; }
+
+.hint-panel{
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .35s ease;
+  margin-top: 10px;
+}
+.hint-panel.is-open{ grid-template-rows: 1fr; }
+.hint-panel__inner{ overflow: hidden; }
+.hint-panel__inner p{
+  background: var(--tertiary-container);
+  color: var(--on-tertiary-container);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: .95rem;
+  border: 2px dashed var(--tertiary);
+}
+
+/* ---- Bloco de feedback (substitui a pergunta após responder) ---- */
+.feedback-block{ text-align: center; }
+.feedback-block[hidden]{ display: none; }
+
+.feedback-icon{
+  width: 72px; height: 72px;
+  margin: 0 auto 14px;
+  display: grid; place-items: center;
+  border-radius: var(--radius-full);
+  font-size: 2.1rem;
+  animation: pop .45s ease;
+}
+.feedback-icon.is-correct{ background: var(--success-container); color: var(--on-success-container); }
+.feedback-icon.is-incorrect{ background: var(--error-container); color: var(--on-error-container); }
+
+.feedback-title{
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+.feedback-text{
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.feedback-image-wrap{ margin-bottom: 22px; }
+.feedback-image-wrap[hidden]{ display: none; }
+.feedback-image{
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain; 
+  background-color: var(--surface-alt); 
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--outline);
+  box-shadow: 0 10px 26px rgba(var(--shadow-rgb), .18);
+  animation: fadeInUp .5s ease both;
+}
+.feedback-image-caption{
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   Tela final
+   ========================================================================== */
+.end-emoji{ font-size: 3.2rem; margin-bottom: 6px; animation: pop .5s ease; }
+.end-score{
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 12vw, 3.6rem);
+  color: var(--gold);
+  margin: 6px 0 12px;
+}
+.end-message{
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 44ch;
+  margin: 0 auto 26px;
+}
+
+/* ==========================================================================
+   Confete (recompensa visual extra ao acertar)
+   ========================================================================== */
+.confetti-layer{
+  position: fixed; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 50;
+}
+.confetti-piece{
+  position: absolute;
+  top: -20px;
+  border-radius: 3px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  to{ transform: translateY(110vh) rotate(540deg); opacity: .9; }
+}
+
+/* ==========================================================================
+   Responsivo — tablets e desktop
+   ========================================================================== */
+@media (min-width: 768px){
+  .app-main{ padding: 40px 24px 70px; }
+  .card{ padding: 44px 48px; }
+  .question-card{ padding: 40px 44px; }
+  .app-header{ padding: 18px 32px; }
+}
+@media (min-width: 1024px){
+  .app-main{ max-width: 800px; }
+}
